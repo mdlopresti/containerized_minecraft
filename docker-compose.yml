@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+    main:
+        build:
+            dockerfile: minecraft.Dockerfile
+            context: .
+        ports: 
+            - 25565:25565
+        environment:
+            # - TYPE=FORGE
+            - EULA=TRUE
+            # - FORGEVERSION=31.2.0
+            - VERSION=1.15.2
+        volumes:
+            - type: bind
+              source: c:\temp
+              target: /data
