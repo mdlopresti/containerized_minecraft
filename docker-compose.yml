@@ -15,3 +15,18 @@ services:
             - type: bind
               source: c:\temp
               target: /data
+
+    mapper:
+        build:
+            context: .
+            dockerfile: mapper.Dockerfile
+        depends_on: 
+            - main
+        volumes: 
+            - type: bind
+              source: C:\temp\world
+              target: /world
+            - mapper_output:/output
+
+volumes: 
+    mapper_output: {}
