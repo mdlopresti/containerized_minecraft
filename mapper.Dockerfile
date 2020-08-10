@@ -16,7 +16,8 @@ RUN apt-get update -y && \
     python3-pip \
     git \
     build-essential \
-    wget -y
+    wget \
+    cron -y
 
 # Install Overviewer
 WORKDIR /usr/local/src
@@ -26,8 +27,15 @@ RUN git checkout tags/$OVERVIEWER_VERSION && \
     python3 setup.py build && \
     ln -s /usr/local/src/Minecraft-Overviewer/overviewer.py /usr/local/bin/mc-ovw
 
+# Download JAR for texture packs
 RUN mkdir -p ~/.minecraft/versions/$MINECRAFT_VERSION/ && \
     wget https://overviewer.org/textures/$MINECRAFT_VERSION -O ~/.minecraft/versions/$MINECRAFT_VERSION/$MINECRAFT_VERSION.jar
 
-# Run Overviewer
-CMD mc-ovw /world /output
+# Create Crontab
+COPY mapper-cron /etc/cron.d/hello-cron
+RUN chmod 0644 /etc/cron.d/hello-cron && \
+    crontab /etc/cron.d/hello-cron && \
+    touch /var/log/cron.log
+
+# Run Cron and tail the log
+CMD cron && tail -f /var/log/cron.log
