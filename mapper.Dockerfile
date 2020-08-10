@@ -1,31 +1,33 @@
 # Base Image
 FROM ubuntu:18.04
 
-# Add build dependency
-RUN apt-get update -y && \
-    apt-get install software-properties-common -y && \
-    add-apt-repository ppa:deadsnakes/ppa 
+ARG MINECRAFT_VERSION
+ARG OVERVIEWER_VERSION
 
+RUN apt-get update -y
+
+# Add build dependency
 RUN apt-get update -y && \
     apt-get install \
     python3 \
-    python3-distutils \
+    python3-pil \
+    python3-dev \
+    python3-numpy \
     python3-pip \
-    git -y
-RUN python3 -m pip install pillow \
-    numpy \
-    networkx \
-    pytest 
-#     python3-pil \
-#     python3-dev \
-#     python3-numpy -y
+    git \
+    build-essential \
+    wget -y
 
 # Install Overviewer
 WORKDIR /usr/local/src
 RUN git clone git://github.com/overviewer/Minecraft-Overviewer.git
 WORKDIR /usr/local/src/Minecraft-Overviewer
-RUN python3 setup.py build && \
+RUN git checkout tags/$OVERVIEWER_VERSION && \
+    python3 setup.py build && \
     ln -s /usr/local/src/Minecraft-Overviewer/overviewer.py /usr/local/bin/mc-ovw
 
+RUN mkdir -p ~/.minecraft/versions/$MINECRAFT_VERSION/ && \
+    wget https://overviewer.org/textures/$MINECRAFT_VERSION -O ~/.minecraft/versions/$MINECRAFT_VERSION/$MINECRAFT_VERSION.jar
+
 # Run Overviewer
-CMD overviewer.py /world /output
+CMD mc-ovw /world /output

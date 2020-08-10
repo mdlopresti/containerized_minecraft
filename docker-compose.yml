@@ -1,10 +1,11 @@
-version: '3.8'
+version: "3.8"
+
 services:
     main:
         build:
             dockerfile: minecraft.Dockerfile
             context: .
-        ports: 
+        ports:
             - 25565:25565
         environment:
             # - TYPE=FORGE
@@ -20,13 +21,18 @@ services:
         build:
             context: .
             dockerfile: mapper.Dockerfile
-        depends_on: 
+            args:
+                MINECRAFT_VERSION: 1.15.2
+                OVERVIEWER_VERSION: v0.15.0
+        depends_on:
             - main
-        volumes: 
+        volumes:
             - type: bind
               source: C:\temp\world
               target: /world
-            - mapper_output:/output
+            - type: bind
+              source: C:\temp\map_output
+              target: /output
 
-volumes: 
+volumes:
     mapper_output: {}
