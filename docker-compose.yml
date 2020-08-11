@@ -30,9 +30,22 @@ services:
             - type: bind
               source: C:\temp\world
               target: /world
+              read_only: true
             - type: bind
               source: C:\temp\map_output
               target: /output
+
+    web:
+        image: nginx
+        ports:
+            - 80:80
+        depends_on:
+            - mapper
+        volumes:
+            - type: bind
+              source: C:\temp\map_output
+              target: /usr/share/nginx/html
+              read_only: true
 
 volumes:
     mapper_output: {}
