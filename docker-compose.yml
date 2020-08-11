@@ -1,10 +1,11 @@
-version: '3.8'
+version: "3.8"
+
 services:
     main:
         build:
             dockerfile: minecraft.Dockerfile
             context: .
-        ports: 
+        ports:
             - 25565:25565
         environment:
             # - TYPE=FORGE
@@ -15,3 +16,36 @@ services:
             - type: bind
               source: c:\temp
               target: /data
+
+    mapper:
+        build:
+            context: .
+            dockerfile: mapper.Dockerfile
+            args:
+                MINECRAFT_VERSION: 1.15.2
+                OVERVIEWER_VERSION: v0.15.0
+        depends_on:
+            - main
+        volumes:
+            - type: bind
+              source: C:\temp\world
+              target: /world
+              read_only: true
+            - type: bind
+              source: C:\temp\map_output
+              target: /output
+
+    web:
+        image: nginx
+        ports:
+            - 80:80
+        depends_on:
+            - mapper
+        volumes:
+            - type: bind
+              source: C:\temp\map_output
+              target: /usr/share/nginx/html
+              read_only: true
+
+volumes:
+    mapper_output: {}
