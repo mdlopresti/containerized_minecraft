@@ -47,5 +47,18 @@ services:
               target: /usr/share/nginx/html
               read_only: true
 
+    backup:
+        build: 
+            dockerfile: backup.Dockerfile
+            context: .
+        volumes:
+            - type: bind
+              source: C:\temp\world
+              target: /world
+              read_only: true
+            - type: bind
+              source: c:\temp\backup
+              target: /backup
+
 volumes:
     mapper_output: {}

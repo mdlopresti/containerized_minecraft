@@ -1,10 +1,10 @@
 # Base Image
 FROM ubuntu:18.04
 
+RUN apt-get update -y
+
 ARG MINECRAFT_VERSION
 ARG OVERVIEWER_VERSION
-
-RUN apt-get update -y
 
 # Add build dependency
 RUN apt-get update -y && \
